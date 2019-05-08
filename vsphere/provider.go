@@ -67,6 +67,12 @@ func Provider() terraform.ResourceProvider {
 				DefaultFunc: schema.EnvDefaultFunc("VSPHERE_CLIENT_DEBUG_PATH", ""),
 				Description: "govmomi debug path for debug",
 			},
+			"client_soap_idle_time": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				DefaultFunc: schema.EnvDefaultFunc("VSPHERE_CLIENT_SOAP_IDLE_TIME", ""),
+				Description: "govmomi soap client keepalive idle time interval",
+			},
 			"persist_session": {
 				Type:        schema.TypeBool,
 				Optional:    true,

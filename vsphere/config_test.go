@@ -1,14 +1,13 @@
 package vsphere
 
 import (
+	"github.com/hashicorp/terraform/helper/schema"
 	"io/ioutil"
 	"log"
 	"os"
 	"reflect"
 	"strconv"
 	"testing"
-
-	"github.com/hashicorp/terraform/helper/schema"
 )
 
 func testAccClientPreCheck(t *testing.T) {
@@ -30,6 +29,7 @@ func testAccClientGenerateConfig(t *testing.T) *Config {
 		VSphereServer: os.Getenv("VSPHERE_SERVER"),
 		DebugPath:     os.Getenv("VSPHERE_CLIENT_DEBUG_PATH"),
 		DebugPathRun:  os.Getenv("VSPHERE_CLIENT_DEBUG_PATH_RUN"),
+		IdleTime:      os.Getenv("VSPHERE_CLIENT_SOAP_IDLE_TIME"),
 	}
 }
 
@@ -171,6 +171,7 @@ func TestNewConfig(t *testing.T) {
 		Persist:         true,
 		VimSessionPath:  "./baz",
 		RestSessionPath: "./qux",
+		IdleTime:        "10ms",
 	}
 
 	r := &schema.Resource{Schema: Provider().(*schema.Provider).Schema}
@@ -185,6 +186,7 @@ func TestNewConfig(t *testing.T) {
 	d.Set("persist_session", expected.Persist)
 	d.Set("vim_session_path", expected.VimSessionPath)
 	d.Set("rest_session_path", expected.RestSessionPath)
+	d.Set("client_soap_idle_time", expected.IdleTime)
 
 	actual, err := NewConfig(d)
 	if err != nil {
