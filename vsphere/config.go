@@ -142,7 +142,7 @@ func (c *Config) Client() (*VSphereClient, error) {
 
 	// Set up the VIM/govmomi client connection, or load a previous session
 	client.vimClient, err = c.SavedVimSessionOrNew(u)
-
+	log.Printf("[DEBUG] VMWare vSphere client idle time string value %s", c.IdleTime)
 	if c.IdleTime != "" {
 		var idleTime time.Duration
 		var err error
@@ -151,6 +151,7 @@ func (c *Config) Client() (*VSphereClient, error) {
 		}
 
 		roundTripper := session.KeepAlive(client.vimClient.RoundTripper, idleTime)
+		log.Printf("[DEBUG] VMWare vSphere client set idle time to %s", idleTime.String())
 		client.vimClient.RoundTripper = roundTripper
 	}
 
