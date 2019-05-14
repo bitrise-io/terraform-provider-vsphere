@@ -23,6 +23,7 @@ import (
 
 	"github.com/vmware/govmomi/vim25/methods"
 	"github.com/vmware/govmomi/vim25/soap"
+	"log"
 )
 
 type keepAlive struct {
