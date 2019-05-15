@@ -41,8 +41,9 @@ type keepAlive struct {
 }
 
 func defaultKeepAlive(roundTripper soap.RoundTripper) error {
-	log.Printf("[DEBUG] CALL KEEPALIVE: TIME: %s, ERROR: %s", time.Format("2006-01-02 15:04:05"), err)
+	log.Printf("[DEBUG] START CALL KEEPALIVE")
 	time, err := methods.GetCurrentTime(context.Background(), roundTripper)
+	log.Printf("[DEBUG] CALL KEEPALIVE: TIME: %s, ERROR: %s", time.Format("2006-01-02 15:04:05"), err)
 
 	return nil
 }
