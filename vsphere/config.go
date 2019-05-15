@@ -142,19 +142,6 @@ func (c *Config) Client() (*VSphereClient, error) {
 
 	// Set up the VIM/govmomi client connection, or load a previous session
 	client.vimClient, err = c.SavedVimSessionOrNew(u)
-	log.Printf("[DEBUG] VMWare vSphere client idle time string value %s", c.IdleTime)
-	if c.IdleTime != "" {
-		var idleTime time.Duration
-		var err error
-		if idleTime, err = time.ParseDuration(c.IdleTime); err != nil {
-			return nil, fmt.Errorf("error parse idle time: %s", err)
-		}
-
-		roundTripper := session.KeepAlive(client.vimClient.RoundTripper, idleTime)
-		log.Printf("[DEBUG] VMWare vSphere client set idle time to %s", idleTime.String())
-		client.vimClient.RoundTripper = roundTripper
-	}
-
 	if err != nil {
 		return nil, err
 	}
@@ -420,7 +407,21 @@ func (c *Config) LoadVimClient() (*govmomi.Client, error) {
 		return nil, nil
 	}
 
+	if c.IdleTime != "" {
+		var idleTime time.Duration
+		var err error
+		if idleTime, err = time.ParseDuration(c.IdleTime); err != nil {
+			return nil, fmt.Errorf("error parse idle time: %s", err)
+		}
+
+		roundTripper := session.KeepAlive(client.RoundTripper, idleTime)
+		log.Printf("[DEBUG] VMWare vSphere client set idle time to %s", idleTime.String())
+		client.RoundTripper = roundTripper
+	}
+
 	m := session.NewManager(client)
+	log.Printf("[DEBUG] VMWare vSphere client idle time string value %s", c.IdleTime)
+
 	u, err := m.UserSession(context.TODO())
 	if err != nil {
 		if soap.IsSoapFault(err) {
